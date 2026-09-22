@@ -1,0 +1,52 @@
+{
+  "name": "vedicaladdin-v7",
+  "version": "7.0.0",
+  "description": "🔱 दुनिया का पहला पूर्ण ऑफलाइन NASDAQ ज्योतिष बुद्धिमत्ता प्रणाली | World's First Complete Offline NASDAQ Vedic Intelligence System",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js --watch",
+    "test": "node tests/test.js",
+    "test:watch": "nodemon tests/test.js",
+    "build": "node scripts/build.js",
+    "serve": "npx http-server ui -p 3000 -g",
+    "analyze": "node -e \"const V=require('./core/vedic-engine'); console.log(JSON.stringify(V.analyzeDate(2026,9,22,12,0,0), null, 2))\""
+  },
+  "keywords": [
+    "vedic",
+    "astrology",
+    "jyotish",
+    "nasdaq",
+    "trading",
+    "nq-futures",
+    "panchanga",
+    "nakshatra",
+    "dasha",
+    "offline",
+    "hindi"
+  ],
+  "author": "VedicAladdin Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vedicaladdin/v7.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vedicaladdin/v7/issues"
+  },
+  "homepage": "https://vedicaladdin.com",
+  "dependencies": {},
+  "optionalDependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "optionalDevelopment": {
+    "description": "Express server is optional - app works fully offline in browser"
+  }
+}

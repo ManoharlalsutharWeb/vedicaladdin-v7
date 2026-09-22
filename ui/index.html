@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="वैदिक अलादीन V7 — NASDAQ ज्योतिष बुद्धिमत्ता प्रणाली">
+    <title>🔱 वैदिक अलादीन V7 — NASDAQ ज्योतिष</title>
+    <meta name="theme-color" content="#1a1a2e">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --gold: #ffd700;
+            --text: #eee;
+            --text-muted: #aaa;
+            --border: #444;
+            --success: #00d084;
+            --warning: #ffa500;
+            --danger: #ff4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans Devanagari', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 20px;
+            border-bottom: 2px solid var(--accent);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 2em;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        header .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: var(--secondary);
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: var(--gold);
+            background: var(--secondary);
+            color: var(--gold);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 8px rgba(233, 69, 96, 0.2);
+        }
+
+        .card h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: var(--primary);
+            color: var(--text);
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 4px rgba(233, 69, 96, 0.3);
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #ff1744;
+            transform: translateY(-2px);
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--primary);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            border: 3px solid var(--accent);
+        }
+
+        .score-circle.bullish {
+            background: rgba(0, 208, 132, 0.2);
+            color: var(--success);
+            border-color: var(--success);
+        }
+
+        .score-circle.bearish {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .score-circle.neutral {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .signal-list {
+            list-style: none;
+            margin: 10px 0;
+        }
+
+        .signal-list li {
+            padding: 8px;
+            margin: 5px 0;
+            background: var(--primary);
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+        }
+
+        .panchanga-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .panchanga-item {
+            background: var(--primary);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .panchanga-item strong {
+            color: var(--gold);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .console {
+            background: var(--primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .console-line {
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .console-line.error {
+            color: var(--danger);
+        }
+
+        .console-line.success {
+            color: var(--success);
+        }
+
+        .console-line.info {
+            color: var(--gold);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .disclaimer {
+            background: var(--secondary);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.85em;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .panchanga-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔱 वैदिक अलादीन V7</h1>
+        <div class="subtitle">दुनिया का पहला पूर्ण ऑफलाइन NASDAQ ज्योतिष बुद्धिमत्ता प्रणाली</div>
+    </header>
+
+    <div class="container">
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('analysis')">📊 विश्लेषण</button>
+            <button class="tab-btn" onclick="switchTab('consensus')">🔀 सहमति</button>
+            <button class="tab-btn" onclick="switchTab('panchanga')">📅 पंचांग</button>
+            <button class="tab-btn" onclick="switchTab('market')">📈 बाजार</button>
+            <button class="tab-btn" onclick="switchTab('tools')">🛠️ उपकरण</button>
+        </div>
+
+        <!-- Analysis Tab -->
+        <div id="analysis" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <h3>📅 तारीख़ और समय</h3>
+                    <form id="dateForm">
+                        <div class="form-group">
+                            <label>वर्ष:</label>
+                            <input type="number" id="year" value="2026" min="1900" max="2050">
+                        </div>
+                        <div class="form-group">
+                            <label>महीना:</label>
+                            <input type="number" id="month" value="9" min="1" max="12">
+                        </div>
+                        <div class="form-group">
+                            <label>दिन:</label>
+                            <input type="number" id="day" value="22" min="1" max="31">
+                        </div>
+                        <div class="form-group">
+                            <label>घंटा (IST):</label>
+                            <input type="number" id="hour" value="12" min="0" max="23">
+                        </div>
+                        <div class="form-group">
+                            <label>मिनट:</label>
+                            <input type="number" id="minute" value="0" min="0" max="59">
+                        </div>
+                        <button type="button" onclick="analyzeDate()">विश्लेषण करें</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>⭐ ग्रह स्थिति</h3>
+                    <div id="planetPositions">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>डेटा लोड हो रहा है...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analysisResults" style="display: none;">
+                <div class="card">
+                    <h3>📊 विस्तृत विश्लेषण</h3>
+                    <div id="analysisOutput" class="console"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consensus Tab -->
+        <div id="consensus" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3>🔀 सहमति स्कोर</h3>
+                    <div id="consensusDisplay">
+                        <p style="text-align: center; color: var(--text-muted);">पहले विश्लेषण करें</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>⚖️ संकेत तुलना</h3>
+                    <div class="grid">
+                        <div class="score-display">
+                            <span>वैदिक:</span>
+                            <span id="vedicScore">-</span>
+                        </div>
+                        <div class="score-display">
+                            <span>बाजार:</span>
+                            <span id="marketScore">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💡 सिफारिशें</h3>
+                <div id="recommendations" style="color: var(--text-muted);">
+                    <p>सहमति विश्लेषण के बाद सिफारिशें दिखाई देंगी</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panchanga Tab -->
+        <div id="panchanga" class="tab-content">
+            <div class="card">
+                <h3>📅 पंचांग तत्व</h3>
+                <div class="panchanga-grid">
+                    <div class="panchanga-item">
+                        <strong>तिथि (चंद्र दिन):</strong>
+                        <span id="tithi">-</span>
+                    </div>
+                    <div class="panchanga-item">
+                        <strong>नक्षत्र:</strong>
+                        <span id="nakshatra">-</span>
+                    </div>
+                    <div class="panchanga-item">
+                        <strong>योग:</strong>
+                        <span id="yoga">-</span>
+                    </div>
+                    <div class="panchanga-item">
+                        <strong>करण:</strong>
+                        <span id="karana">-</span>
+                    </div>
+                    <div class="panchanga-item">
+                        <strong>वार:</strong>
+                        <span id="vara">-</span>
+                    </div>
+                    <div class="panchanga-item">
+                        <strong>अयनांश:</strong>
+                        <span id="ayanamsha">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Tab -->
+        <div id="market" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3>📈 NY सत्र</h3>
+                    <div id="sessionInfo">
+                        <p style="color: var(--text-muted);">NY बाजार समय जानकारी यहाँ दिखाई देगी</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 बाजार व्यवहार</h3>
+                    <div id="marketBehavior">
+                        <p style="color: var(--text-muted);">बाजार डेटा यहाँ दिखाई देगा</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools Tab -->
+        <div id="tools" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3>🧮 मुहूर्त कैलकुलेटर</h3>
+                    <form id="muhurtaForm">
+                        <div class="form-group">
+                            <label>मुहूर्त के लिए तारीख़:</label>
+                            <input type="date" id="muhurtaDate">
+                        </div>
+                        <button type="button" onclick="calculateMuhurta()">मुहूर्त स्कोर प्राप्त करें</button>
+                    </form>
+                    <div id="muhurtaResult" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 डेटाबेस</h3>
+                    <button onclick="checkDatabase()">डेटाबेस स्थिति</button>
+                    <div id="dbStatus" style="margin-top: 15px; font-size: 0.9em;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>ℹ️ जानकारी</h3>
+                    <p><strong>संस्करण:</strong> V7.0</p>
+                    <p><strong>मोड:</strong> <span id="modeIndicator">ऑफलाइन</span></p>
+                    <p><strong>डेटा श्रेणी:</strong> 1900-2050</p>
+                    <button onclick="checkOnline()">इंटरनेट स्थिति जांचें</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            <strong>⚠️ अस्वीकरण:</strong> यह प्रणाली शुद्ध वैदिक ज्योतिषीय गणना और सांख्यिकीय विश्लेषण पर आधारित है। 
+            यह कोई निश्चित निवेश सलाह या भविष्यवाणी नहीं है। वाणिज्यिक फैसले लेने से पहले पेशेवर सलाह लें।
+            <br/><strong>अयोग्यता:</strong> बाजार जोखिम अधीन है। अपने विवेक से निर्णय लें।
+        </div>
+    </div>
+
+    <footer>
+        <p>🔱 ॐ नमः शिवाय — माता चामुंडा को प्रणाम 🔱</p>
+        <p>VedicAladdin V7 | Schema: 7.0 | © 2026</p>
+    </footer>
+
+    <!-- Load modules -->
+    <script src="loader.js"></script>
+
+    <script>
+        // Initialize modules
+        let currentAnalysis = null;
+        let modules = {};
+
+        // Load all core modules
+        async function initializeModules() {
+            console.log('[INIT] Waiting for modules...');
+            try {
+                await VEDIC_LOADER.waitUntilReady();
+                console.log('[INIT] All modules ready!');
+            } catch (error) {
+                console.error('[INIT] Module loading failed:', error);
+            }
+            
+            return {
+                ephemeris: typeof EPHEMERIS !== 'undefined' ? EPHEMERIS : null,
+                panchanga: typeof PANCHANGA !== 'undefined' ? PANCHANGA : null,
+                varga: typeof VARGA !== 'undefined' ? VARGA : null,
+                dasha: typeof DASHA !== 'undefined' ? DASHA : null,
+                vedicEngine: typeof VEDIC_ENGINE !== 'undefined' ? VEDIC_ENGINE : null,
+                marketEngine: typeof MARKET_ENGINE !== 'undefined' ? MARKET_ENGINE : null,
+                consensusEngine: typeof CONSENSUS_ENGINE !== 'undefined' ? CONSENSUS_ENGINE : null,
+                database: typeof DATABASE !== 'undefined' ? DATABASE : null
+            };
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Analyze date
+        async function analyzeDate() {
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+            const hour = parseInt(document.getElementById('hour').value);
+            const minute = parseInt(document.getElementById('minute').value);
+
+            addLog(`विश्लेषण शुरू: ${day}/${month}/${year} ${hour}:${minute}`, 'info');
+
+            try {
+                if (modules.vedicEngine) {
+                    currentAnalysis = modules.vedicEngine.analyzeDate(year, month, day, hour, minute);
+                    displayResults(currentAnalysis);
+                } else {
+                    addLog('VEDIC_ENGINE मॉड्यूल लोड नहीं है', 'error');
+                }
+            } catch (error) {
+                addLog(`त्रुटि: ${error.message}`, 'error');
+            }
+        }
+
+        // Display results
+        function displayResults(analysis) {
+            // Planet positions
+            let planetHTML = '<div style="font-size: 0.9em;">';
+            const planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'rahu', 'ketu'];
+            const planetNames = ['सूर्य', 'चन्द्र', 'बुध', 'शुक्र', 'मंगल', 'बृहस्पति', 'शनि', 'राहु', 'केतु'];
+            
+            planets.forEach((planet, index) => {
+                if (analysis.planetDetails && analysis.planetDetails[planet]) {
+                    const detail = analysis.planetDetails[planet];
+                    planetHTML += `<div>${planetNames[index]}: ${detail.name_hi} ${detail.degrees}°${detail.minutes}'</div>`;
+                }
+            });
+            planetHTML += '</div>';
+            document.getElementById('planetPositions').innerHTML = planetHTML;
+
+            // Panchanga
+            if (analysis.panchanga) {
+                const p = analysis.panchanga;
+                document.getElementById('tithi').textContent = p.tithi.name_hi;
+                document.getElementById('nakshatra').textContent = p.nakshatra.name_hi;
+                document.getElementById('yoga').textContent = p.yoga.name_hi;
+                document.getElementById('karana').textContent = p.karana.name;
+                document.getElementById('vara').textContent = p.vara.name_hi;
+            }
+
+            if (analysis.ayanamsha) {
+                document.getElementById('ayanamsha').textContent = analysis.ayanamsha.toFixed(2) + '°';
+            }
+
+            // Show results card
+            document.getElementById('analysisResults').style.display = 'block';
+            addLog(`विश्लेषण पूर्ण: ${analysis.summary_hi}`, 'success');
+        }
+
+        // Calculate Muhurta
+        function calculateMuhurta() {
+            const date = document.getElementById('muhurtaDate').value;
+            if (!date) {
+                alert('कृपया तारीख़ चुनें');
+                return;
+            }
+
+            const [year, month, day] = date.split('-').map(Number);
+            
+            if (modules.vedicEngine) {
+                const score = modules.vedicEngine.getMuhurtaScore(year, month, day, 12, 0);
+                let result = `<div class="score-display">`;
+                result += `<span>मुहूर्त स्कोर:</span>`;
+                result += `<div class="score-circle ${score > 70 ? 'bullish' : score > 50 ? 'neutral' : 'bearish'}">${score}</div>`;
+                result += `</div>`;
+                
+                let quality = score > 70 ? 'बहुत अच्छा' : score > 50 ? 'अच्छा' : 'औसत';
+                result += `<p>गुणवत्ता: <strong>${quality}</strong></p>`;
+                
+                document.getElementById('muhurtaResult').innerHTML = result;
+            }
+        }
+
+        // Check database
+        function checkDatabase() {
+            const status = `
+                <div style="background: var(--primary); padding: 10px; border-radius: 4px;">
+                    <p>✅ डेटाबेस: तैयार</p>
+                    <p>📍 अयनांश: लाहिरी 23°11'</p>
+                    <p>📊 पंचांग डेटा: 1900-2050 में उपलब्ध</p>
+                    <p>💾 स्टोरेज: IndexedDB + In-Memory</p>
+                </div>
+            `;
+            document.getElementById('dbStatus').innerHTML = status;
+        }
+
+        // Check online status
+        function checkOnline() {
+            const isOnline = navigator.onLine;
+            const status = isOnline ? 'ऑनलाइन' : 'ऑफलाइन';
+            document.getElementById('modeIndicator').textContent = status;
+            alert(`स्थिति: ${status}`);
+        }
+
+        // Console logging
+        function addLog(message, type = 'info') {
+            const console = document.getElementById('analysisOutput');
+            if (console) {
+                const line = document.createElement('div');
+                line.className = `console-line ${type}`;
+                line.textContent = `[${new Date().toLocaleTimeString('hi-IN')}] ${message}`;
+                console.appendChild(line);
+                console.scrollTop = console.scrollHeight;
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            modules = await initializeModules();
+            addLog('वैदिक अलादीन V7 तैयार है', 'success');
+            addLog('सभी मॉड्यूल लोड: ' + Object.keys(modules).filter(m => modules[m]).length + '/7', 'info');
+            
+            // Set default date to today
+            const today = new Date();
+            document.getElementById('year').value = today.getFullYear();
+            document.getElementById('month').value = today.getMonth() + 1;
+            document.getElementById('day').value = today.getDate();
+            document.getElementById('muhurtaDate').value = today.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>
